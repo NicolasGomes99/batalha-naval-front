@@ -39,7 +39,11 @@ export function useGameSounds() {
 
       // Ruído adicional para efeito de explosão
       const noise = ctx.createBufferSource();
-      const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.2, ctx.sampleRate);
+      const noiseBuffer = ctx.createBuffer(
+        1,
+        ctx.sampleRate * 0.2,
+        ctx.sampleRate,
+      );
       const output = noiseBuffer.getChannelData(0);
       for (let i = 0; i < output.length; i++) {
         output[i] = (Math.random() * 2 - 1) * 0.2;
@@ -69,7 +73,7 @@ export function useGameSounds() {
       const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const output = noiseBuffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) {
-        output[i] = (Math.random() * 2 - 1);
+        output[i] = Math.random() * 2 - 1;
       }
 
       const noise = ctx.createBufferSource();
@@ -79,14 +83,20 @@ export function useGameSounds() {
       const bandpass = ctx.createBiquadFilter();
       bandpass.type = "bandpass";
       bandpass.frequency.setValueAtTime(400, ctx.currentTime);
-      bandpass.frequency.linearRampToValueAtTime(200, ctx.currentTime + duration);
+      bandpass.frequency.linearRampToValueAtTime(
+        200,
+        ctx.currentTime + duration,
+      );
       bandpass.Q.value = 1.5;
 
       // Envelope de volume: ataque rápido, decaimento suave
       const noiseGain = ctx.createGain();
       noiseGain.gain.setValueAtTime(0.01, ctx.currentTime);
       noiseGain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.02);
-      noiseGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+      noiseGain.gain.exponentialRampToValueAtTime(
+        0.01,
+        ctx.currentTime + duration,
+      );
 
       noise.connect(bandpass);
       bandpass.connect(noiseGain);
@@ -110,10 +120,14 @@ export function useGameSounds() {
 
       // 3. Segundo splash levemente atrasado (gotículas)
       const drip = ctx.createBufferSource();
-      const dripBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.15), ctx.sampleRate);
+      const dripBuf = ctx.createBuffer(
+        1,
+        Math.floor(ctx.sampleRate * 0.15),
+        ctx.sampleRate,
+      );
       const dripData = dripBuf.getChannelData(0);
       for (let i = 0; i < dripData.length; i++) {
-        dripData[i] = (Math.random() * 2 - 1);
+        dripData[i] = Math.random() * 2 - 1;
       }
       drip.buffer = dripBuf;
 

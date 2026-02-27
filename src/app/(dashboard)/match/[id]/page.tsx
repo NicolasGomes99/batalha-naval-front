@@ -83,7 +83,10 @@ export default function MatchPage() {
   return <div>Estado desconhecido: {gameState.status}</div>;
 }
 
-function adaptGameStateToEntity(dto: MatchGameState, myPlayerId: string | null) {
+function adaptGameStateToEntity(
+  dto: MatchGameState,
+  myPlayerId: string | null,
+) {
   const MY_ID = "me";
   const OPPONENT_ID = "opponent";
 
@@ -96,8 +99,9 @@ function adaptGameStateToEntity(dto: MatchGameState, myPlayerId: string | null) 
     // Estratégia 1: Detecção pelo estado dos tabuleiros (mais confiável para vitória por tiro)
     const opponentShips = dto.opponentBoard?.ships ?? [];
     const myShips = dto.myBoard?.ships ?? [];
-    const allOpponentShipsSunk = opponentShips.length > 0 && opponentShips.every(s => s.isSunk);
-    const allMyShipsSunk = myShips.length > 0 && myShips.every(s => s.isSunk);
+    const allOpponentShipsSunk =
+      opponentShips.length > 0 && opponentShips.every((s) => s.isSunk);
+    const allMyShipsSunk = myShips.length > 0 && myShips.every((s) => s.isSunk);
 
     if (allOpponentShipsSunk && !allMyShipsSunk) {
       isWinner = true;

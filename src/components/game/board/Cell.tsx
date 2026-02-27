@@ -44,11 +44,7 @@ export const Cell: React.FC<CellProps> = ({
           </div>
         );
       case CellState.MISS:
-        return (
-          <div className="text-blue-300/70 text-lg">
-            ●
-          </div>
-        );
+        return <div className="text-blue-300/70 text-lg">●</div>;
       default:
         return null;
     }
@@ -60,8 +56,12 @@ export const Cell: React.FC<CellProps> = ({
         "w-10 h-10 border border-gray-700 flex items-center justify-center",
         "transition-all duration-200",
         getCellStyle(),
-        !disabled && state !== CellState.HIT && state !== CellState.MISS && "cursor-pointer",
-        (disabled || state === CellState.HIT || state === CellState.MISS) && "cursor-not-allowed",
+        !disabled &&
+          state !== CellState.HIT &&
+          state !== CellState.MISS &&
+          "cursor-pointer",
+        (disabled || state === CellState.HIT || state === CellState.MISS) &&
+          "cursor-not-allowed",
         isAnimating === "hit" && "animate-hit-explosion",
         isAnimating === "miss" && "animate-miss-splash",
       )}

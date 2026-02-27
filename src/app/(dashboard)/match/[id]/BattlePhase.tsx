@@ -4,11 +4,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  ShipDto,
-  MatchStatsDto,
-  ShootResponse,
-} from "@/types/api-responses";
+import { ShipDto, MatchStatsDto, ShootResponse } from "@/types/api-responses";
 import { Grid } from "@/components/game/board/Grid";
 import { Radar } from "@/components/game/board/Radar";
 import { TurnIndicator } from "@/components/game/HUD/TurnIndicator";
@@ -95,8 +91,7 @@ export default function BattlePhase({ match }: BattlePhaseProps) {
       addToast(msg, "info", 3000);
     },
     onGameOverByTimeout: (result) => {
-      const msg =
-        result.message || "Partida encerrada por inatividade.";
+      const msg = result.message || "Partida encerrada por inatividade.";
       // O toast será mostrado pelo useEffect de game-over quando o polling
       // detectar o status Finished e determinar quem venceu.
       // Aqui apenas invalida os caches para que o polling pegue o estado final.
@@ -184,7 +179,11 @@ export default function BattlePhase({ match }: BattlePhaseProps) {
         const err = error as { status?: number; message?: string };
         // Erro 409 = Já atirou nessa posição
         if (err?.status === 409) {
-          addToast("Você já atirou nessa posição! Escolha outra.", "info", 2500);
+          addToast(
+            "Você já atirou nessa posição! Escolha outra.",
+            "info",
+            2500,
+          );
         } else {
           const errorMessage =
             err?.message || "Erro ao processar disparo. Tente novamente.";
@@ -273,12 +272,10 @@ export default function BattlePhase({ match }: BattlePhaseProps) {
           {match.stats && (
             <div className="flex justify-center gap-8 mt-4 text-sm">
               <div className="text-green-400">
-                 Acertos: {match.stats.myHits} | Sequência:{" "}
+                Acertos: {match.stats.myHits} | Sequência:{" "}
                 {match.stats.myStreak}
               </div>
-              <div className="text-red-400">
-                 Erros: {match.stats.myMisses}
-              </div>
+              <div className="text-red-400">Erros: {match.stats.myMisses}</div>
             </div>
           )}
 
@@ -314,9 +311,7 @@ export default function BattlePhase({ match }: BattlePhaseProps) {
 
           {/* Meu Tabuleiro (somente leitura) */}
           <div className="flex flex-col items-center">
-            <h3 className="text-xl font-bold mb-4 text-white">
-              Seu Tabuleiro
-            </h3>
+            <h3 className="text-xl font-bold mb-4 text-white">Seu Tabuleiro</h3>
             <Grid grid={myGrid} readOnly={true} showShips={true} />
           </div>
         </div>
@@ -327,10 +322,7 @@ export default function BattlePhase({ match }: BattlePhaseProps) {
             <FleetStatus ships={myShips} title="Sua Frota" />
           )}
           {opponentShips.length > 0 && (
-            <FleetStatus
-              ships={opponentShips}
-              title="Frota do Oponente"
-            />
+            <FleetStatus ships={opponentShips} title="Frota do Oponente" />
           )}
         </div>
 

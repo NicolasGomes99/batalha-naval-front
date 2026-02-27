@@ -23,10 +23,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { matchService } from "@/services/matchService";
 import { TimeoutCheckResult } from "@/types/api-responses";
-import {
-  TURN_TIMEOUT_SECONDS,
-  TIMEOUT_CHECK_INTERVAL,
-} from "@/lib/constants";
+import { TURN_TIMEOUT_SECONDS, TIMEOUT_CHECK_INTERVAL } from "@/lib/constants";
 
 interface UseTurnTimerOptions {
   matchId: string;
