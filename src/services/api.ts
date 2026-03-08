@@ -19,6 +19,7 @@ import {
   setToken,
 } from "@/lib/utils";
 import { API_CONFIG } from "@/lib/constants";
+import { MatchHistoryItem } from "@/types/api-responses";
 /**
  * Standardized API error structure
  */
@@ -138,5 +139,10 @@ api.interceptors.response.use(
     return Promise.reject(apiError);
   },
 );
+
+export const getMatchHistory = async (): Promise<MatchHistoryItem[]> => {
+  const response = await api.get<MatchHistoryItem[]>("/users/history"); 
+  return response.data;
+};
 
 export default api;
