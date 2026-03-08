@@ -18,9 +18,28 @@ export const useStartCampaignMutation = () => {
       // Invalida a query para manter a interface atualizada
       queryClient.invalidateQueries({ queryKey: ["campaignProgress"] });
       queryClient.invalidateQueries({ queryKey: ["matches"] });
-      
+
       if (typeof window !== "undefined") {
         localStorage.setItem("matchId", data.matchId);
+      }
+    },
+    onError: (error: ApiError) => {
+      console.error("Error starting campaign:", error);
+    },
+  });
+};
+
+export const useCancelCampaignMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (matchId: string) => campaignService.cancelMatch(matchId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["campaignProgress"] });
+      queryClient.invalidateQueries({ queryKey: ["matches"] });
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("matchId");
       }
     },
   });

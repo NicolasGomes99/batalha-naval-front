@@ -27,6 +27,8 @@ export interface ApiError {
   message: string;
   status?: number;
   code?: string;
+  title?: string;
+  detail?: string;
 }
 
 /**
@@ -125,7 +127,7 @@ api.interceptors.response.use(
     }
     // Handle other errors
     const responseData = error.response?.data as
-      | { message?: string }
+      | { message?: string; title?: string; detail?: string }
       | undefined;
     const apiError: ApiError = {
       message:
@@ -134,6 +136,8 @@ api.interceptors.response.use(
         "An unexpected error occurred",
       status: error.response?.status,
       code: error.code,
+      title: responseData?.title,
+      detail: responseData?.detail,
     };
 
     return Promise.reject(apiError);

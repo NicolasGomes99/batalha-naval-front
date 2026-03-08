@@ -22,9 +22,15 @@ import {
   useJoinMatchMutation,
 } from "@/hooks/queries/useMatchMutations";
 import { useMatchListQuery } from "@/hooks/queries/useMatchQuery";
-import { useCampaignProgressQuery, useStartCampaignMutation } from "@/hooks/queries/useCampaign";
+import {
+  useCampaignProgressQuery,
+  useCancelCampaignMutation,
+  useStartCampaignMutation,
+} from "@/hooks/queries/useCampaign";
 import { MatchStatus } from "@/types/game-enums";
 import {
+  AlertCircle,
+  ArrowRight,
   Badge,
   Bot,
   Brain,
@@ -37,9 +43,11 @@ import {
   Search,
   Swords,
   Target,
+  XCircle,
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ApiError } from "@/services/api";
 
 /**
  * AI Difficulty levels
@@ -73,11 +81,13 @@ const difficultyOptions: DifficultyOption[] = [
 export const GameModeSelector: React.FC = () => {
   const router = useRouter();
   const createMatch = useCreateMatchMutation();
+  const cancelCampaign = useCancelCampaignMutation();
   const joinMatch = useJoinMatchMutation();
   const { data: matches, isLoading: isLoadingMatches } = useMatchListQuery();
 
   //modo campanha
-  const { data: campaignProgress, isLoading: isLoadingCampaign } = useCampaignProgressQuery();
+  const { data: campaignProgress, isLoading: isLoadingCampaign } =
+    useCampaignProgressQuery();
   const startCampaign = useStartCampaignMutation();
 
   //TODO: NAO FAZ nada ainda pq n existe um get match no back
@@ -107,6 +117,10 @@ export const GameModeSelector: React.FC = () => {
 
   // Campaign State
   const [campaignError, setCampaignError] = useState("");
+  const [alreadyMatch, setAlreadyMatch] = useState<{
+    inMatch: boolean;
+    matchId?: string;
+  }>({ inMatch: false });
 
   /**
    * Handle PvE match creation
@@ -123,6 +137,25 @@ export const GameModeSelector: React.FC = () => {
       router.push(`/match/${match.matchId}`);
     } catch (error) {
       console.error("Erro ao iniciar treinamento:", error);
+    }
+  };
+
+  const handleContinueMatch = () => {
+    if (alreadyMatch.matchId) {
+      router.push(`/match/${alreadyMatch.matchId}`);
+    }
+  };
+
+  const handleCancelMatch = async () => {
+    if (!alreadyMatch.matchId) return;
+
+    try {
+      await cancelCampaign.mutateAsync(alreadyMatch.matchId);
+      setAlreadyMatch({ inMatch: false });
+    } catch (error) {
+      console.error("Erro ao cancelar partida:", error);
+      setCampaignError("Falha ao cancelar a partida em andamento.");
+      setAlreadyMatch({ inMatch: false });
     }
   };
 
@@ -157,7 +190,22 @@ export const GameModeSelector: React.FC = () => {
       router.push(`/match/${match.matchId}`);
     } catch (error) {
       console.error("Erro ao iniciar campanha:", error);
-      setCampaignError("Não foi possível iniciar a campanha");
+      if (error?.constructor?.name === "Object") {
+        const newError = error as ApiError;
+        if (
+          newError?.status === 409 &&
+          newError?.detail?.includes("O usuário já possui uma partida ativa")
+        ) {
+          const matchId = newError.detail
+            .split("ID: ")[1]
+            .split(").")[0]
+            ?.trim();
+
+          setAlreadyMatch({ inMatch: true, matchId: matchId });
+          setCampaignError("");
+          return;
+        }
+      }
     }
   };
 
@@ -165,25 +213,43 @@ export const GameModeSelector: React.FC = () => {
   const getStageInfo = (stage?: string) => {
     switch (stage) {
       case "Stage1Basic":
-        return { title: "Estágio 1 - Frota Patrulha", desc: "A inteligência inimiga é rudimentar. Defenda nossas águas.", color: "text-emerald-400" };
+        return {
+          title: "Estágio 1 - Frota Patrulha",
+          desc: "A inteligência inimiga é rudimentar. Defenda nossas águas.",
+          color: "text-emerald-400",
+        };
       case "Stage2Intermediate":
-        return { title: "Estágio 2 - Frota Intermediária", desc: "Eles aprenderam nossas táticas. A IA caçará seus navios.", color: "text-orange-400" };
+        return {
+          title: "Estágio 2 - Frota Intermediária",
+          desc: "Eles aprenderam nossas táticas. A IA caçará seus navios.",
+          color: "text-orange-400",
+        };
       case "Stage3Advanced":
-        return { title: "Estágio 3 - Frota Almirante", desc: "Estratégia avançada. Cada movimento inimigo é calculado.", color: "text-red-400" };
+        return {
+          title: "Estágio 3 - Frota Almirante",
+          desc: "Estratégia avançada. Cada movimento inimigo é calculado.",
+          color: "text-red-400",
+        };
       case "Completed":
-        return { title: "Campanha Concluída", desc: "Almirante, os mares estão seguros graças a você!", color: "text-cyan-400" };
+        return {
+          title: "Campanha Concluída",
+          desc: "Almirante, os mares estão seguros graças a você!",
+          color: "text-cyan-400",
+        };
       default:
-        return { title: "Carregando Operação...", desc: "Buscando diretrizes do comando...", color: "text-slate-400" };
+        return {
+          title: "Carregando Operação...",
+          desc: "Buscando diretrizes do comando...",
+          color: "text-slate-400",
+        };
     }
   };
 
   const currentStageInfo = getStageInfo(campaignProgress?.currentStage);
   const isCampaignCompleted = campaignProgress?.currentStage === "Completed";
 
-
   return (
     <div className="space-y-6">
-
       {/* NOVO: Campaign Section */}
       <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm relative overflow-hidden group">
         <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none group-hover:opacity-[0.05] transition-opacity">
@@ -197,13 +263,14 @@ export const GameModeSelector: React.FC = () => {
             </CardTitle>
           </div>
           <CardDescription className="text-sm font-small text-slate-400 mb-5">
-            Siga as missões do Comando Naval e enfrente frotas progressivamente mais difíceis.
+            Siga as missões do Comando Naval e enfrente frotas progressivamente
+            mais difíceis.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col gap-2">
             {isLoadingCampaign ? (
-               <div className="h-6 w-48 bg-slate-800 animate-pulse rounded"></div>
+              <div className="h-6 w-48 bg-slate-800 animate-pulse rounded"></div>
             ) : (
               <>
                 <h3 className={cn("text-lg font-bold", currentStageInfo.color)}>
@@ -213,7 +280,9 @@ export const GameModeSelector: React.FC = () => {
                   {currentStageInfo.desc}
                 </p>
                 {campaignError && (
-                  <p className="text-sm text-red-500 font-semibold">{campaignError}</p>
+                  <p className="text-sm text-red-500 font-semibold">
+                    {campaignError}
+                  </p>
                 )}
               </>
             )}
@@ -225,9 +294,9 @@ export const GameModeSelector: React.FC = () => {
             disabled={isCampaignCompleted || isLoadingCampaign}
             className={cn(
               "w-full rounded-2xl text-white font-bold h-12 transition-all",
-              isCampaignCompleted 
-                ? "bg-slate-800 opacity-50 cursor-not-allowed" 
-                : "bg-gradient-to-r from-yellow-600 to-amber-700 hover:scale-[1.01] active:scale-[0.99] shadow-[0_0_20px_rgba(217,119,6,0.3)]"
+              isCampaignCompleted
+                ? "bg-slate-800 opacity-50 cursor-not-allowed"
+                : "bg-gradient-to-r from-yellow-600 to-amber-700 hover:scale-[1.01] active:scale-[0.99] shadow-[0_0_20px_rgba(217,119,6,0.3)]",
             )}
             size="lg"
           >
@@ -479,6 +548,60 @@ export const GameModeSelector: React.FC = () => {
           )}
         </CardContent>
       </Card>
+      {alreadyMatch.inMatch && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="bg-slate-800/50 p-6 border-b border-slate-700 flex flex-col items-center text-center">
+              <div className="bg-yellow-500/10 p-3 rounded-full mb-4">
+                <AlertCircle className="w-8 h-8 text-yellow-500" />
+              </div>
+              <h2 className="text-xl font-bold text-white mb-2">
+                Missão em Andamento
+              </h2>
+              <p className="text-slate-400 text-sm">
+                Almirante, detectamos que você já possui uma operação ativa em
+                nossos radares.
+              </p>
+            </div>
+
+            <div className="p-6 bg-slate-900 space-y-4">
+              <p className="text-sm text-center text-slate-300 mb-6">
+                Deseja retornar ao comando desta frota ou abortar a missão atual
+                para iniciar uma nova?
+              </p>
+
+              <div className="flex flex-col gap-3">
+                <Button
+                  onClick={handleContinueMatch}
+                  className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold h-12"
+                >
+                  <ArrowRight className="w-4 h-4 mr-2" />
+                  Retornar à Batalha
+                </Button>
+
+                <Button
+                  onClick={handleCancelMatch}
+                  isLoading={cancelCampaign.isPending}
+                  variant="outline"
+                  className="w-full border-red-900/50 text-red-400 hover:bg-red-950/30 hover:text-red-300 font-semibold h-12"
+                >
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Abortar Missão Atual
+                </Button>
+              </div>
+
+              <div className="pt-2 text-center">
+                <button
+                  onClick={() => setAlreadyMatch({ inMatch: false })}
+                  className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                >
+                  Cancelar (Fechar aviso)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
