@@ -136,7 +136,22 @@ export const GameModeSelector: React.FC = () => {
       // Redireciona usando o ID retornado
       router.push(`/match/${match.matchId}`);
     } catch (error) {
-      console.error("Erro ao iniciar treinamento:", error);
+      if (error?.constructor?.name === "Object") {
+        const newError = error as ApiError;
+        if (
+          newError?.status === 409 &&
+          newError?.detail?.includes("O usuário já possui uma partida ativa")
+        ) {
+          const matchId = newError.detail
+            .split("ID: ")[1]
+            .split(").")[0]
+            ?.trim();
+
+          setAlreadyMatch({ inMatch: true, matchId: matchId });
+          setCampaignError("");
+          return;
+        }
+      }
     }
   };
 
