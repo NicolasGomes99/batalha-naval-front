@@ -24,23 +24,13 @@ export interface FleetShipConfig {
   label: string;
 }
 
-/**
- * Canonical fleet configuration.
- * Maps each `ShipType` to its size, count and display label.
- *
- * Sizes follow the standard Battleship rules:
- *   Porta-Aviões (Carrier) — 5
- *   Encouraçado  (Battleship) — 4
- *   Submarino    (Submarine) — 3
- *   Destroyer    (Destroyer) — 3
- *   Patrulha     (Patrol Boat) — 2
- */
 export const FLEET_CONFIG: Record<ShipType, FleetShipConfig> = {
-  [ShipType.PORTA_AVIAO]: { size: 5, count: 1, label: 'Porta-Aviões' },
-  [ShipType.ENCOURACADO]: { size: 4, count: 1, label: 'Encouraçado' },
-  [ShipType.SUBMARINE]:   { size: 3, count: 1, label: 'Submarino' },
-  [ShipType.DESTROYER]:   { size: 3, count: 1, label: 'Destroyer' },
-  [ShipType.PATRULHA]:    { size: 2, count: 1, label: 'Patrulha' },
+  [ShipType.PORTA_AVIAO_A]:  { size: 6, count: 1, label: 'Porta-Aviões Alpha' },
+  [ShipType.PORTA_AVIAO_B]:  { size: 6, count: 1, label: 'Porta-Aviões Bravo' },
+  [ShipType.NAVIO_GUERRA_A]: { size: 4, count: 1, label: 'Navio de Guerra Alpha' },
+  [ShipType.NAVIO_GUERRA_B]: { size: 4, count: 1, label: 'Navio de Guerra Bravo' },
+  [ShipType.ENCOURACADO]:    { size: 3, count: 1, label: 'Encouraçado' },
+  [ShipType.SUBMARINO]:      { size: 1, count: 1, label: 'Submarino' },
 };
 
 /**

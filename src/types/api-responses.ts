@@ -137,3 +137,23 @@ export interface TimeoutCheckResult {
   winnerId: string | null;
   message: string | null;
 }
+
+export interface CampaignProgressDto {
+  currentStage: string; // Ex: 'Stage1Basic', 'Stage2Intermediate', 'Stage3Advanced', 'Completed'
+  completedAt: string | null;
+}
+
+export interface StartCampaignMatchResponseDto {
+  matchId: string;
+  stage: string;
+  aiDifficulty: string;
+}
+
+export interface MatchHistoryItem {
+  id: string;
+  opponentName: string;
+  result: "Vitória" | "Derrota" | "Cancelada / Empate";
+  gameMode: string;
+  playedAt: string;
+  duration: string | null;
+}

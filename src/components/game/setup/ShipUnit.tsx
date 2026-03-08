@@ -14,19 +14,21 @@ import { cn } from '@/lib/utils';
 // ─── Visual mapping per ship type ────────────────────────────────────────────
 
 const SHIP_COLOURS: Record<ShipType, string> = {
-  [ShipType.PORTA_AVIAO]: 'bg-slate-500',
-  [ShipType.ENCOURACADO]: 'bg-zinc-500',
-  [ShipType.SUBMARINE]:   'bg-emerald-700',
-  [ShipType.DESTROYER]:   'bg-sky-700',
-  [ShipType.PATRULHA]:    'bg-amber-700',
+  [ShipType.PORTA_AVIAO_A]:  'bg-slate-500',
+  [ShipType.PORTA_AVIAO_B]:  'bg-slate-600',
+  [ShipType.NAVIO_GUERRA_A]: 'bg-sky-700',
+  [ShipType.NAVIO_GUERRA_B]: 'bg-sky-800',
+  [ShipType.ENCOURACADO]:    'bg-zinc-500',
+  [ShipType.SUBMARINO]:      'bg-emerald-700',
 };
 
 const SHIP_ACCENT: Record<ShipType, string> = {
-  [ShipType.PORTA_AVIAO]: 'border-slate-300',
-  [ShipType.ENCOURACADO]: 'border-zinc-300',
-  [ShipType.SUBMARINE]:   'border-emerald-400',
-  [ShipType.DESTROYER]:   'border-sky-400',
-  [ShipType.PATRULHA]:    'border-amber-400',
+  [ShipType.PORTA_AVIAO_A]:  'border-slate-300',
+  [ShipType.PORTA_AVIAO_B]:  'border-slate-400',
+  [ShipType.NAVIO_GUERRA_A]: 'border-sky-400',
+  [ShipType.NAVIO_GUERRA_B]: 'border-sky-500',
+  [ShipType.ENCOURACADO]:    'border-zinc-300',
+  [ShipType.SUBMARINO]:      'border-emerald-400',
 };
 
 // ─── Props ───────────────────────────────────────────────────────────────────
