@@ -86,7 +86,9 @@ export const FleetStatus: React.FC<FleetStatusProps> = ({
                 {ship.isSunk ? (
                   <>
                     <BombIcon className="w-3 h-3 text-red-500" />
-                    <span className="text-red-400 uppercase tracking-wider">Afundado</span>
+                    <span className="text-red-400 uppercase tracking-wider">
+                      Afundado
+                    </span>
                   </>
                 ) : (
                   <>

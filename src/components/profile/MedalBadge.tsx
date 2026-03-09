@@ -141,7 +141,7 @@ export const MedalBadge: React.FC<MedalBadgeProps> = ({
               showTooltip && medal.unlocked && "scale-110",
             )}
           >
-            { medal.icon}
+            {medal.icon}
           </span>
         </div>
 

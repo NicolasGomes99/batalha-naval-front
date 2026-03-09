@@ -124,7 +124,7 @@ export default function BattlePhase({ match }: BattlePhaseProps) {
   // Tanto o Player A quanto o Player B (convidado) recebem o modo correto.
   const isDynamicMode = match.gameMode === "Dynamic";
   // Compatível com localStorage como cache de escrita (opcional)
-  const setIsDynamicMode = (_: boolean) => { }; // no-op: modo é imutável em runtime
+  const setIsDynamicMode = (_: boolean) => {}; // no-op: modo é imutável em runtime
 
   const isMyTurn = match.isMyTurn;
   const isFinished = match.status === MatchStatus.FINISHED;
@@ -432,13 +432,13 @@ export default function BattlePhase({ match }: BattlePhaseProps) {
           {/* Stats compactas */}
           {match.stats && (
             <div className="flex justify-center gap-6 mt-4">
-                <div className="px-4 py-1.5 flex items-center gap-2 rounded-full bg-emerald-900/30 border border-emerald-700/40 text-emerald-400 text-sm font-mono">
-                  <Target className="w-4 h-4" /> 
-                  <span>{match.stats.myHits} acertos</span> 
-                </div>
+              <div className="px-4 py-1.5 flex items-center gap-2 rounded-full bg-emerald-900/30 border border-emerald-700/40 text-emerald-400 text-sm font-mono">
+                <Target className="w-4 h-4" />
+                <span>{match.stats.myHits} acertos</span>
+              </div>
               <div className="px-4 py-1.5 flex items-center gap-2 rounded-full bg-amber-900/30 border border-amber-700/40 text-amber-400 text-sm font-mono">
-                <Zap className="w-4 h-4"/>
-                <span>{match.stats.myStreak} sequência</span>  
+                <Zap className="w-4 h-4" />
+                <span>{match.stats.myStreak} sequência</span>
               </div>
               <div className="px-4 py-1.5 rounded-full  flex items-center gap-2 bg-slate-800/60 border border-slate-700/40 text-slate-400 text-sm font-mono">
                 <Wind className="w-4 h-4"></Wind>
@@ -477,7 +477,7 @@ export default function BattlePhase({ match }: BattlePhaseProps) {
           {/* Meu Tabuleiro + Painel de Movimento */}
           <div className="flex flex-col items-center">
             <h3 className="text-xl flex items-center align-center justify-center gap-2 font-bold mb-4 text-slate-300 uppercase tracking-widest">
-              <Anchor/>
+              <Anchor />
               <span>SEU TABULEIRO</span>
             </h3>
             <Grid

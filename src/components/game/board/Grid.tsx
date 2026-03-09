@@ -55,7 +55,6 @@ function resolveShipTypes(ships: ShipDto[]): Map<string, ShipType> {
   return result;
 }
 
-
 interface GridProps {
   grid: CellState[][];
   onCellClick?: (row: number, col: number) => void;
