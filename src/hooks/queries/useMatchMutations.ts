@@ -128,6 +128,6 @@ export const useCancelMatchMutation = () => {
     },
     onError: (error) => {
       console.error("Erro ao cancelar o convite:", error);
-    }
+    },
   });
 };

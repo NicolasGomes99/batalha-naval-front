@@ -667,16 +667,16 @@ export const GameModeSelector: React.FC = () => {
 
                     {/* Botão de Cancelar Convite */}
                     <Button
-                        size="sm"
-                        isLoading={cancelMatch.isPending} //
-                        className="ml-3 bg-red-500 hover:bg-red-700 text-white font-bold"
-                        onClick={async () => {
-                          try {
-                            await cancelMatch.mutateAsync(invite.matchId);
-                          } catch (error) {
-                            console.error("Falha ao recusar o convite", error);
-                          }
-                        }}
+                      size="sm"
+                      isLoading={cancelMatch.isPending} //
+                      className="ml-3 bg-red-500 hover:bg-red-700 text-white font-bold"
+                      onClick={async () => {
+                        try {
+                          await cancelMatch.mutateAsync(invite.matchId);
+                        } catch (error) {
+                          console.error("Falha ao recusar o convite", error);
+                        }
+                      }}
                     >
                       <XCircle className="w-4 h-4 mr-1" />
                       Cancelar
